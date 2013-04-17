@@ -1,0 +1,59 @@
+﻿@model DropDownCascada.Models.IndexViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@section Scripts {
+    <script type="text/javascript" src="../../Scripts/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript">
+        function getModelos(id) { 
+            $.ajax({
+                url: "@Url.Action("Modelos", "Auto")",
+                data: {id: id},
+                dataType: "json",
+                type: "POST",
+                error: function(){
+                    alert("Ha ocurrido un error.");
+                },
+                success: function(data){
+                    var items = "";
+                    $.each(data, function(i, item){
+                        items += "<option value=\"" + item.Value + "\">" + item.Text + "</option>";
+                    });
+
+                    $("#Modelo").html(items);
+                }
+            });
+        }
+
+        $(document).ready(function(){
+            
+            
+            $("#Fabricante").change(function(){
+                var id = $("#Fabricante").val();
+                getModelos(id);
+            });
+        });
+    </script>
+}
+
+<h2>@ViewBag.Message</h2>
+@using (Html.BeginForm()) {
+    <div class="editor-label">
+        @Html.LabelFor(m => m.Fabricante)
+    </div>
+    <div class="editor-field">
+        @Html.DropDownListFor(m => m.Fabricante, Model.FabricantesDisponibles)
+    </div>
+    
+    <div class="editor-label">
+        @Html.LabelFor(m => m.Modelo)
+    </div>
+    <div class="editor-field">
+        @Html.DropDownListFor(m => m.Modelo, Model.ModelosDisponibles)
+    </div>
+    
+    <p>
+        <input type="submit" value="Submit" />
+    </p>
+}
